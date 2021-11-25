@@ -1,0 +1,18 @@
+hisotgrama, boxplot, y densidad
+- puntos por partida, dinero por partida, dinero por dia, puntos dinero rapido por partida
+
+grafico de relacion entre puntos por partida y dinero rapido
+
+proporcion de partidas que ganan 50k
+proporcion de dias que ganan 50k
+proporcion de plata 50k y que no
+
+promedio de plata por dia
+promedio de plata por partida
+promedio de puntos por partida
+promedio de puntos por juego rapido
+
+
+Encontrar distribucion de los puntos de dinero rapido (normal?????????????????)
+Pedir datos para usar como test
+
