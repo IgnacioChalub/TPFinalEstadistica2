@@ -16,3 +16,13 @@ promedio de puntos por juego rapido
 Encontrar distribucion de los puntos de dinero rapido (normal?????????????????)
 Pedir datos para usar como test
 
+
+NACHO:
+densitiy, relacion entre puntos
+
+MATEO:
+histogram, proporciones
+
+MICA:
+boxplot, promedios
+
