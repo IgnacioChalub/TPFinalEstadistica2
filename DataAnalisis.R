@@ -37,7 +37,7 @@ x = dinero_partidas[dinero_partidas != 50000]
 density_dinero_partidas_sin_50k <- ggplot(data.frame(x), aes(x=x)) + 
   geom_density(color="darkblue", fill="lightblue") + 
   geom_vline(aes(xintercept=mean(x)), color="blue", linetype="dashed", size=1) + 
-  labs(title = "Dinero por dia sin 50000", x="Dinero")
+  labs(title = "Dinero por partida sin 50000", x="Dinero")
 density_dinero_partidas_sin_50k
 
 #density dinero por dia 
