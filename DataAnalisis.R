@@ -42,11 +42,11 @@ density_dinero_partidas_sin_50k
 
 #density dinero por dia 
 x <- dinero_por_dia
-density_dinero_partidas_sin_50k <- ggplot(data.frame(x), aes(x=x)) + 
+density_dinero_por_dia <- ggplot(data.frame(x), aes(x=x)) + 
   geom_density(color="darkblue", fill="lightblue") +
   geom_vline(aes(xintercept=mean(x)), color="blue", linetype="dashed", size=1) + 
   labs(title = "Dinero por dia", x="Dinero")
-density_dinero_partidas_sin_50k
+density_dinero_por_dia
 
 #relacion puntos por partida y puntos en dinero rapido
 modelo <- lm(puntos_dinero_rapido_partidas~puntos_partidas)
