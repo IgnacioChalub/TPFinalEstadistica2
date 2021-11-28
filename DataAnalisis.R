@@ -92,7 +92,7 @@ data <- data.frame(Grupos= c(" > 50k", " < 10k "),
 )
 ggplot(data, aes(x="", y=Porcentajes, fill=Grupos)) +
   geom_bar(stat="identity", width=1) +
-  coord_polar("y", start=0))
+  coord_polar("y", start=0)
 
 #Proporcion de plata ganada con 50k y sin
 plata_con_50k <- dinero_partidas[dinero_partidas == 50000]
@@ -102,6 +102,6 @@ data <- data.frame(Grupos= c("50k", " < 10k"),
 )
 ggplot(data, aes(x="", y=Porcentajes, fill=Grupos)) +
   geom_bar(stat="identity", width=1) +
-  coord_polar("y", start=0))
+  coord_polar("y", start=0)
 
 
