@@ -8,6 +8,19 @@ puntos_dinero_rapido_partidas <- append(DATA$PUNTOS_PRIMER_DINERO_RAPIDO, DATA$P
 dinero_partidas <- append(DATA$DINERO_PRIMERA_PARTIDA, DATA$DINERO_SEGUNDA_PARTIDA)
 dinero_por_dia <- DATA$DINERO_PRIMERA_PARTIDA + DATA$DINERO_SEGUNDA_PARTIDA
 
+
+x <- sort(puntos_dinero_rapido_partidas)
+
+chisq.test(x, rnorm(length(x),mean(x),sd(x)))
+
+ks.test(x,"pnorm",mean(x),sd(x))
+qqnorm(x)
+shapiro.test(x)
+library(nortest)
+pearson.test(x)
+sf.test(x)
+ad.test(x)
+
 #density puntos dinero rapido por partidas
 x <- puntos_dinero_rapido_partidas
 density_puntos_dinero_rapido <- ggplot(data.frame(x), aes(x=x)) + 
@@ -16,8 +29,15 @@ density_puntos_dinero_rapido <- ggplot(data.frame(x), aes(x=x)) +
   labs(title = "Puntos dinero rapido por partida", x="Puntos")
 density_puntos_dinero_rapido
 
-#density puntos por partida
-x <- puntos_partidas
+x <- puntos_dinero_rapido_partidas
+density_puntos_dinero_rapido <- ggplot(data.frame(x), aes(x=x)) + 
+  geom_density(color="darkblue", fill="lightblue") + 
+  geom_vline(aes(xintercept=mean(x)), color="blue", linetype="dashed", size=1)+
+  labs(title = "Puntos dinero rapido por partida", x="Puntos")
+density_puntos_dinero_rapido
+
+#density de distribucion teorica con misma media y desvio
+x <- rnorm(150, mean = mean(puntos_dinero_rapido_partidas), sd = sd(puntos_dinero_rapido_partidas))
 density_puntos <- ggplot(data.frame(x), aes(x=x)) + 
   geom_density(color="darkblue", fill="lightblue") + 
   geom_vline(aes(xintercept=mean(x)), color="blue", linetype="dashed", size=1) +
