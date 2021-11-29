@@ -21,11 +21,37 @@ pearson.test(x)
 sf.test(x)
 ad.test(x)
 
+####
+x <- sort(puntos_dinero_rapido_partidas)
+mid_unif <- x[x>120 & x<200]
+ks.test(mid_unif,"punif",120,200)
+qqplot(mid_unif, runif(length(mid_unif),120,200))
+boxplot(mid_unif)
+
+###
+discreto <- x[x>=200]
+p200 <- length(discreto)/length(x)
+
+###
+left_norm <- x[x<120 & x>85]
+
+shapiro.test(left_norm)
+ks.test(left_norm,"pnorm",mean(left_norm),sd(left_norm))
+
+x <- left_norm
+density_left_norm <- ggplot(data.frame(x), aes(x=x)) + 
+  geom_vline(aes(xintercept=mean(x)), color="blue", linetype="dashed", size=1)+
+  geom_density(color="darkblue", fill="lightblue") + 
+  labs(title = "Puntos dinero rapido por partida", x="Puntos")
+density_left_norm
+
+####
+
 #density puntos dinero rapido por partidas
 x <- puntos_dinero_rapido_partidas
 density_puntos_dinero_rapido <- ggplot(data.frame(x), aes(x=x)) + 
-  geom_density(color="darkblue", fill="lightblue") + 
   geom_vline(aes(xintercept=mean(x)), color="blue", linetype="dashed", size=1)+
+  geom_density(color="darkblue", fill="lightblue") + 
   labs(title = "Puntos dinero rapido por partida", x="Puntos")
 density_puntos_dinero_rapido
 histogram_puntos_dinero_rapido <- qplot(x, geom = "histogram", binwidth = 5, main = "Histograma de puntos en dinero rapido", xlab = "Puntos", fill = I("blue"), col = I("black"), alpha = I(.2), xlim = c(50, 250))
