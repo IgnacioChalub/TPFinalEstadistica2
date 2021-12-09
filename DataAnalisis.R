@@ -1,6 +1,6 @@
 library(ggplot2)
 library(readxl)
-DATA = read_xlsx("~/faculty/estadistica2/TPFinalEstadistica2/DATOSPROGRAMAS.xlsx")
+DATA = read_xlsx("~/faculty/estadistica2/TPFinalEstadistica2/Muestreo 100 Args.xlsx")
 View(DATA)
 
 puntos_partidas <- append(DATA$PUNTOS_PRIMERA_PARTIDA, DATA$PUNTOS_SEGUNDA_PARTIDA)
