@@ -1,0 +1,146 @@
+---
+title: "Trabajo Practico Final Estadistica 2"
+subtitle: "Hecho por: Micaela Dominguez, Mateo Valle Duran e Ignacio Chalub"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(readxl)
+DATA = read_xlsx("~/faculty/estadistica2/TPFinalEstadistica2/Muestreo 100 Args.xlsx")
+View(DATA)
+```
+
+# INSERT TEXT INTRODUCCION
+
+```{r histogramas, echo=FALSE}
+puntaje_mas_popular <- na.omit(append(c(DATA$`Puntaje Mas PopularPuntaje Mas Popular1`), c(DATA$`Puntaje Mas PopularPuntaje Mas Popular`)))
+puntaje_mas_popular <- na.omit(append(puntaje_mas_popular, c(DATA$`Puntaje Mas Popular2`)))
+puntaje_mas_popular <- na.omit(append(puntaje_mas_popular, c(DATA$`Puntaje Mas Popular3`)))
+puntaje_mas_popular <- na.omit(append(puntaje_mas_popular, c(DATA$`Puntaje Mas Popular4`)))                               
+hist(puntaje_mas_popular, 
+     main="Puntajes mas populares", 
+     xlab="Puntajes", 
+     ylab= "Frecuencia",
+     border="darkblue", 
+     col="lightblue")
+
+puntaje_segundo_mas_popular <- na.omit(append(c(DATA$`Puntaje Segunda Mas Popular`), c(DATA$`Puntaje Segunda Mas Popular1`)))
+puntaje_segundo_mas_popular <- na.omit(append(puntaje_segundo_mas_popular, c(DATA$`Puntaje Segunda Mas Popular2`)))
+puntaje_segundo_mas_popular <- na.omit(append(puntaje_segundo_mas_popular, c(DATA$`Puntaje Segunda Mas Popular3`)))
+puntaje_segundo_mas_popular <- na.omit(append(puntaje_segundo_mas_popular, c(DATA$`Puntaje Segunda Mas Popular4`)))                               
+hist(puntaje_segundo_mas_popular, 
+     main="Segundos puntajes mas populares", 
+     xlab="Puntajes", 
+     ylab= "Frecuencia",
+     border="darkblue", 
+     col="lightblue")
+```
+
+# INSERT TEXT SIMULACION
+
+```{r simulacion, echo=TRUE}
+muestras <- c()
+for(i in 1:40000){
+    cantidad_de_puntos <- 0 
+    for ( i in 1:5){
+      mejor_puntaje <- trunc(rnorm(1,mean(puntaje_mas_popular),4.284323)) 
+      segundo_puntaje <- trunc(rnorm(1,mean(puntaje_segundo_mas_popular),2.985134)) 
+      tercer_puntaje <- trunc(rnorm(1, 14, 2)) 
+      cuarto_puntaje <- trunc(rnorm(1,7, 2)) 
+      for(i in 1:2){
+        puntajes <- c(mejor_puntaje, segundo_puntaje, tercer_puntaje, cuarto_puntaje)
+        n <- runif(n=1, min=0, max = 100) 
+        if (n < mejor_puntaje){
+          cantidad_de_puntos <- mejor_puntaje + cantidad_de_puntos
+        }else if(  n > mejor_puntaje & n < mejor_puntaje + segundo_puntaje){
+          cantidad_de_puntos <- segundo_puntaje + cantidad_de_puntos
+        }else if( n > mejor_puntaje + segundo_puntaje & n < mejor_puntaje + segundo_puntaje + 
+                  tercer_puntaje){
+          cantidad_de_puntos <- tercer_puntaje + cantidad_de_puntos
+        }else if( n > mejor_puntaje + segundo_puntaje + tercer_puntaje & n < mejor_puntaje +
+                  segundo_puntaje + tercer_puntaje + cuarto_puntaje){
+          cantidad_de_puntos <- cuarto_puntaje + cantidad_de_puntos
+        }else{
+          cantidad_de_puntos <- cantidad_de_puntos
+        }
+      }
+    }
+    muestras <- append(muestras, cantidad_de_puntos)
+  }
+
+ganadores <- muestras[ muestras >= 200 ] 
+probabilidad_de_ganar <- length(ganadores)/40000
+dinero_ganadores <- length(ganadores)/1000 * 50000
+perdedores <- muestras[muestras < 200]
+dinero_perdedores <- sum(perdedores)/1000 * 50
+dinero_por_mes <- dinero_ganadores + dinero_perdedores
+```
+
+```{r resultados_simulacion, echo=FALSE}
+cat("Probabilidad de ganar 1 dinero rapido:", probabilidad_de_ganar)
+cat("Dinero destinado a ganadores:", dinero_ganadores)
+cat("Dinero destinado a perdedores:",  dinero_perdedores)
+cat("Dinero total por mes:", dinero_por_mes)
+```
+
+# INSERT TEXT (anova)
+
+```{r anova, echo=FALSE}
+mes1 <- na.omit(DATA$Total)[1:27]
+mes2 <- na.omit(DATA$Total)[28:54]
+mes3 <-na.omit(DATA$Total)[58:84]
+grupos<-c(rep("mes1",27),rep("mes2",27),rep("mes3",27))
+summary(aov(c(mes1, mes2, mes3)~grupos))
+```
+
+# INSERT TEXT (test de hipotesis)
+
+```{r test, echo=FALSE}
+ganadores <- muestras[ muestras >= 200 ]
+
+datos_reales<-(DATA$Total)
+ganadores_reales <- datos_reales[datos_reales >=200]
+
+proporcion_observada <- length(ganadores)/length(muestras) - length(ganadores_reales)/length(datos_reales)
+p <- (length(ganadores)+length(ganadores_reales) )/(length(muestras) + length(datos_reales))
+sd <- sqrt(p*(1-p)* (1/length(datos_reales) + 1/ length(muestras)))
+2*(1-pnorm(proporcion_observada,0,sd))
+```
+
+# INSERT TEXT OTROS RESULTADOS
+
+## se gana con 150
+
+```{r comparacion_150, echo=FALSE}
+ganadores <- muestras[ muestras >= 150 ] 
+probabilidad_de_ganar <- length(ganadores)/40000
+dinero_ganadores <- length(ganadores)/1000 * 50000
+perdedores <- muestras[muestras < 150]
+dinero_perdedores <- sum(perdedores)/1000 * 50
+dinero_por_mes <- dinero_ganadores + dinero_perdedores
+
+cat("Probabilidad de ganar 1 dinero rapido:", probabilidad_de_ganar)
+cat("Dinero destinado a ganadores:", dinero_ganadores)
+cat("Dinero destinado a perdedores:",  dinero_perdedores)
+cat("Dinero total por mes:", dinero_por_mes)
+```
+
+## se gana con 250
+
+```{r comparacion_250, echo=FALSE}
+ganadores <- muestras[ muestras >= 250 ] 
+probabilidad_de_ganar <- length(ganadores)/40000
+dinero_ganadores <- length(ganadores)/1000 * 50000
+perdedores <- muestras[muestras < 250]
+dinero_perdedores <- sum(perdedores)/1000 * 50
+dinero_por_mes <- dinero_ganadores + dinero_perdedores
+
+cat("Probabilidad de ganar 1 dinero rapido:", probabilidad_de_ganar)
+cat("Dinero destinado a ganadores:", dinero_ganadores)
+cat("Dinero destinado a perdedores:",  dinero_perdedores)
+cat("Dinero total por mes:", dinero_por_mes)
+```
+
+# INSERT TEXT CONCLUCION

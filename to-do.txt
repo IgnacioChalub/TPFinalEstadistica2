@@ -1,28 +1,8 @@
-hisotgrama, boxplot, y densidad
-- puntos por partida, dinero por partida, dinero por dia, puntos dinero rapido por partida
+AL FINAL:
+Comparacion de resultados con muestras de programas
+Comparar que pasa si se gana con 150 0 con 250 puntos
 
-grafico de relacion entre puntos por partida y dinero rapido
-
-proporcion de partidas que ganan 50k
-proporcion de dias que ganan 50k
-proporcion de plata 50k y que no
-
-promedio de plata por dia
-promedio de plata por partida
-promedio de puntos por partida
-promedio de puntos por juego rapido
-
-
-Encontrar distribucion de los puntos de dinero rapido (normal?????????????????)
-Pedir datos para usar como test
-
-
-NACHO:
-densitiy, relacion entre puntos
-
-MATEO:
-histogram, proporciones
-
-MICA:
-boxplot, promedios
+AHORA:
+anova entre meses
+test de hipotesis para prob de ganar 1 juego de dinero rapido y proporcion de ganadas
 
