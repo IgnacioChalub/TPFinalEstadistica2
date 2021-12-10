@@ -2,132 +2,96 @@ library(ggplot2)
 library(readxl)
 DATA = read_xlsx("~/faculty/estadistica2/TPFinalEstadistica2/Muestreo 100 Args.xlsx")
 View(DATA)
+puntaje_mas_popular <- na.omit(append(c(DATA$`Puntaje Mas PopularPuntaje Mas Popular1`), c(DATA$`Puntaje Mas PopularPuntaje Mas Popular`)))
+puntaje_mas_popular <- na.omit(append(puntaje_mas_popular, c(DATA$`Puntaje Mas Popular2`)))
+puntaje_mas_popular <- na.omit(append(puntaje_mas_popular, c(DATA$`Puntaje Mas Popular3`)))
+puntaje_mas_popular <- na.omit(append(puntaje_mas_popular, c(DATA$`Puntaje Mas Popular4`)))                               
+hist(puntaje_mas_popular, 
+     main="Histograma de puntajes mas populares", 
+     xlab="Puntajes", 
+     ylab= "Frecuencia",
+     border="darkblue", 
+     col="lightblue")
+mean(puntaje_mas_popular)
+sd(puntaje_mas_popular)
+puntaje_segundo_mas_popular <- na.omit(append(c(DATA$`Puntaje Segunda Mas Popular`), c(DATA$`Puntaje Segunda Mas Popular1`)))
+puntaje_segundo_mas_popular <- na.omit(append(puntaje_segundo_mas_popular, c(DATA$`Puntaje Segunda Mas Popular2`)))
+puntaje_segundo_mas_popular <- na.omit(append(puntaje_segundo_mas_popular, c(DATA$`Puntaje Segunda Mas Popular3`)))
+puntaje_segundo_mas_popular <- na.omit(append(puntaje_segundo_mas_popular, c(DATA$`Puntaje Segunda Mas Popular4`)))                               
+hist(puntaje_segundo_mas_popular, 
+     main="Histograma de segundo puntajes mas populares", 
+     xlab="Puntajes", 
+     ylab= "Frecuencia",
+     border="darkblue", 
+     col="lightblue")
+mean(puntaje_segundo_mas_popular)
+sd(puntaje_segundo_mas_popular)
+puntaje_malas <- na.omit(c(DATA$`Numero de Respuestas Malas 0-7`))
+puntaje_buenas <- na.omit(c(DATA$`Numero de Mas Populares`))
+puntaje_medias <- na.omit(c(DATA$`Numero de Segunda Mas Populares`))
+sum(puntaje_malas)
+sum(puntaje_buenas) + sum(puntaje_malas) + sum(puntaje_medias)
+#
+puntaje_1 <- na.omit(c(DATA$puntaje1))
+mean(puntaje_1)
+hist(puntaje_1)
+puntaje_2 <- na.omit(c(DATA$puntaje2))
+mean(puntaje_2)
+hist(puntaje_2)
+puntaje_3 <- na.omit(c(DATA$puntaje3))
+mean(puntaje_3)
+hist(puntaje_3)
+puntaje_4 <- na.omit(c(DATA$puntaje4))
+mean(puntaje_4)
+hist(puntaje_4)
+puntaje_5 <- na.omit(c(DATA$puntaje5))
+mean(puntaje_5)
+hist(puntaje_5)
+puntaje_6 <- na.omit(c(DATA$puntaje6))
+mean(puntaje_6)
+hist(puntaje_6)
 
-puntos_partidas <- append(DATA$PUNTOS_PRIMERA_PARTIDA, DATA$PUNTOS_SEGUNDA_PARTIDA)
-puntos_dinero_rapido_partidas <- append(DATA$PUNTOS_PRIMER_DINERO_RAPIDO, DATA$PUNTOS_SEGUNDO_DINERO_RAPIDO)
-dinero_partidas <- append(DATA$DINERO_PRIMERA_PARTIDA, DATA$DINERO_SEGUNDA_PARTIDA)
-dinero_por_dia <- DATA$DINERO_PRIMERA_PARTIDA + DATA$DINERO_SEGUNDA_PARTIDA
+#puntaje_primera  --> media 27.75 y desvío 1.5
+#puntaje_segunda  --> media 19.14 y desvío 1.5
+#puntaje_tercera  --> media 12.97 y desvío 1.5
+#puntaje_cuarta --> media 8.54 y desvío 1.5 
+#puntaje_ quinta  --> media 4.47 y desvío 1.5 
+#puntaje_sexta --> media 2.64 y desvío 1.5
+
+muestras <- c()
+for(i in 1:30000){
+    cantidad_de_puntos <- 0 
+    for ( i in 1:5){
+      mejor_puntaje <- trunc(rnorm(1,mean(puntaje_mas_popular),4.284323)) 
+      segundo_puntaje <- trunc(rnorm(1,mean(puntaje_segundo_mas_popular),2.985134)) 
+      tercer_puntaje <- trunc(rnorm(1, 14, 2)) 
+      cuarto_puntaje <- trunc(rnorm(1,7, 2)) 
+      for(i in 1:2){
+        puntajes <- c(mejor_puntaje, segundo_puntaje, tercer_puntaje, cuarto_puntaje, quinto_puntaje, sexto_puntaje)
+        n <- runif(n=1, min=0, max = 100) 
+        if (n < mejor_puntaje){
+          cantidad_de_puntos <- mejor_puntaje + cantidad_de_puntos
+        }else if(  n > mejor_puntaje & n < mejor_puntaje + segundo_puntaje){
+          cantidad_de_puntos <- segundo_puntaje + cantidad_de_puntos
+        }else if( n > mejor_puntaje + segundo_puntaje & n < mejor_puntaje + segundo_puntaje + tercer_puntaje){
+          cantidad_de_puntos <- tercer_puntaje + cantidad_de_puntos
+        }else if( n > mejor_puntaje + segundo_puntaje + tercer_puntaje & n < mejor_puntaje + segundo_puntaje + tercer_puntaje + cuarto_puntaje){
+          cantidad_de_puntos <- cuarto_puntaje + cantidad_de_puntos
+        }else{
+          cantidad_de_puntos <- cantidad_de_puntos
+        }
+      }
+    }
+    muestras <- append(muestras, cantidad_de_puntos)
+  }
+
+ganadores <- muestras[ muestras >= 200 ] 
+perdedores <- muestras[muestras < 200]
+length(ganadores)/1000*50000 + sum(perdedores)/1000 * 50
 
 
-x <- sort(puntos_dinero_rapido_partidas)
 
-chisq.test(x, rnorm(length(x),mean(x),sd(x)))
-
-ks.test(x,"pnorm",mean(x),sd(x))
-qqnorm(x)
-shapiro.test(x)
-library(nortest)
-pearson.test(x)
-sf.test(x)
-ad.test(x)
-
-####
-x <- sort(puntos_dinero_rapido_partidas)
-mid_unif <- x[x>120 & x<200]
-ks.test(mid_unif,"punif",120,200)
-qqplot(mid_unif, runif(length(mid_unif),120,200))
-boxplot(mid_unif)
-
-###
-discreto <- x[x>=200]
-p200 <- length(discreto)/length(x)
-
-###
-left_norm <- x[x<120 & x>85]
-
-shapiro.test(left_norm)
-ks.test(left_norm,"pnorm",mean(left_norm),sd(left_norm))
-
-x <- left_norm
-density_left_norm <- ggplot(data.frame(x), aes(x=x)) + 
-  geom_vline(aes(xintercept=mean(x)), color="blue", linetype="dashed", size=1)+
-  geom_density(color="darkblue", fill="lightblue") + 
-  labs(title = "Puntos dinero rapido por partida", x="Puntos")
-density_left_norm
-
-####
-
-#density puntos dinero rapido por partidas
-x <- puntos_dinero_rapido_partidas
-density_puntos_dinero_rapido <- ggplot(data.frame(x), aes(x=x)) + 
-  geom_vline(aes(xintercept=mean(x)), color="blue", linetype="dashed", size=1)+
-  geom_density(color="darkblue", fill="lightblue") + 
-  labs(title = "Puntos dinero rapido por partida", x="Puntos")
-density_puntos_dinero_rapido
-histogram_puntos_dinero_rapido <- qplot(x, geom = "histogram", binwidth = 5, main = "Histograma de puntos en dinero rapido", xlab = "Puntos", fill = I("blue"), col = I("black"), alpha = I(.2), xlim = c(50, 250))
-histogram_puntos_dinero_rapido
-
-x <- puntos_dinero_rapido_partidas
-density_puntos_dinero_rapido <- ggplot(data.frame(x), aes(x=x)) + 
-  geom_density(color="darkblue", fill="lightblue") + 
-  geom_vline(aes(xintercept=mean(x)), color="blue", linetype="dashed", size=1)+
-  labs(title = "Puntos dinero rapido por partida", x="Puntos")
-density_puntos_dinero_rapido
-
-#density de distribucion teorica con misma media y desvio
-x <- rnorm(150, mean = mean(puntos_dinero_rapido_partidas), sd = sd(puntos_dinero_rapido_partidas))
-density_puntos <- ggplot(data.frame(x), aes(x=x)) + 
-  geom_density(color="darkblue", fill="lightblue") + 
-  geom_vline(aes(xintercept=mean(x)), color="blue", linetype="dashed", size=1) +
-  labs(title = "Puntos por partida", x="Puntos") 
-density_puntos
-histogram_puntos <- qplot(x, geom = "histogram", binwidth = 20, main = "Histograma de puntos en la partida", xlab = "Puntos", fill = I("blue"), col = I("black"), alpha = I(.2), xlim = c(100, 600))
-histogram_puntos
-
-#density dinero por partida
-x <- dinero_partidas
-density_dinero_partidas <- ggplot(data.frame(x), aes(x=x)) + 
-  geom_density(color="darkblue", fill="lightblue") + 
-  geom_vline(aes(xintercept=mean(x)), color="blue", linetype="dashed", size=1) + 
-  labs(title = "Dinero por partida", x="Dinero")
-density_dinero_partidas
-histogram_dinero_partidas <- qplot(x, geom = "histogram", binwidth = 1000, main = "Histograma de dinero ganado", xlab = "Puntos", fill = I("blue"), col = I("black"), alpha = I(.2), xlim = c(1000, 51000))
-histogram_dinero_partidas
-
-#density dinero por partida sin 50k
-x = dinero_partidas[dinero_partidas != 50000] 
-density_dinero_partidas_sin_50k <- ggplot(data.frame(x), aes(x=x)) + 
-  geom_density(color="darkblue", fill="lightblue") + 
-  geom_vline(aes(xintercept=mean(x)), color="blue", linetype="dashed", size=1) + 
-  labs(title = "Dinero por partida sin 50000", x="Dinero")
-density_dinero_partidas_sin_50k
-histogram_dinero_partidas_sin_50k <- qplot(x, geom = "histogram", binwidth = 500, main = "Histograma de dinero ganado sin 50k", xlab = "Puntos", fill = I("blue"), col = I("black"), alpha = I(.2), xlim = c(0, 10500))
-histogram_dinero_partidas_sin_50k
-
-#density dinero por dia 
-x <- dinero_por_dia
-density_dinero_por_dia <- ggplot(data.frame(x), aes(x=x)) + 
-  geom_density(color="darkblue", fill="lightblue") +
-  geom_vline(aes(xintercept=mean(x)), color="blue", linetype="dashed", size=1) + 
-  labs(title = "Dinero por dia", x="Dinero")
-density_dinero_por_dia
-histogram_dinero_por_dia <- qplot(x, geom = "histogram", binwidth = 2000, main = "Histograma de dinero por dia", xlab = "Puntos", fill = I("blue"), col = I("black"), alpha = I(.2), xlim = c(0, 102000))
-histogram_dinero_por_dia
-
-#relacion puntos por partida y puntos en dinero rapido
-modelo <- lm(puntos_dinero_rapido_partidas~puntos_partidas)
-summary(modelo)
-abline(plot(puntos_partidas,puntos_dinero_rapido_partidas, col="blue", xlab = "Puntos partida", ylab = "Puntos en dinero rapido"))
-abline(modelo)
-
-#Proporciones partidas con y sin 50k
-partidas_con_50k <- dinero_partidas[dinero_partidas == 50000]
-partidas_sin_50k <- dinero_partidas[dinero_partidas != 50000]
-data <- data.frame(Grupos= c(" > 50k", " < 10k "),
-  Porcentajes=c(length(partidas_con_50k)/length(dinero_partidas)*100, length(partidas_sin_50k)/length(dinero_partidas)*100)
-)
-ggplot(data, aes(x="", y=Porcentajes, fill=Grupos)) +
-  geom_bar(stat="identity", width=1) +
-  coord_polar("y", start=0)
-
-#Proporcion de plata ganada con 50k y sin
-plata_con_50k <- dinero_partidas[dinero_partidas == 50000]
-plata_sin_50k <- dinero_partidas[dinero_partidas != 50000]
-data <- data.frame(Grupos= c("50k", " < 10k"),
-                   Porcentajes=c(sum(plata_con_50k)/sum(dinero_partidas)*100, sum(plata_sin_50k)/sum(dinero_partidas)*100)
-)
-ggplot(data, aes(x="", y=Porcentajes, fill=Grupos)) +
-  geom_bar(stat="identity", width=1) +
-  coord_polar("y", start=0)
-
+puntos_ <- na.omit(c(DATA$Total))
+length(puntos_)
+length(puntos_[puntos_ >= 200])
 
