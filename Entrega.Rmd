@@ -12,7 +12,10 @@ DATA = read_xlsx("~/faculty/estadistica2/TPFinalEstadistica2/Muestreo 100 Args.x
 View(DATA)
 ```
 
-# INSERT TEXT INTRODUCCION
+
+El objetivo del trabajo es estimar el dinero mensual que debe asignar la producción al programa “100 argentinos dicen” para la categoría de “Dinero rápido”.
+La idea principal no es calcular este número en base a programas pasados, sino que, tratar de predecirlo como si no se hubiera transmitido ningún programa. 
+
 
 ```{r histogramas, echo=FALSE}
 puntaje_mas_popular <- na.omit(append(c(DATA$`Puntaje Mas PopularPuntaje Mas Popular1`), c(DATA$`Puntaje Mas PopularPuntaje Mas Popular`)))
@@ -38,8 +41,18 @@ hist(puntaje_segundo_mas_popular,
      col="lightblue")
 ```
 
-# INSERT TEXT SIMULACION
+Nuestro grupo tomó alrededor de 80 dineros rápidos de los que muestreamos los puntos de la primera respuesta, la segunda y en algunos casos la tercera. 
+Como el conductor solo menciona cuando una respuesta es la primera o la segunda, supusimos que una respuesta era la tercera cuando su puntaje se encontraba cercano al de la segunda. 
+Las respuestas con muy pocos puntos, las tomamos como la cuarta respuesta, suponiendo que había solo cuatro respuestas que sumaban una cantidad significante de puntos, mientras que el resto sumarían puntos despreciables. Solo nos basamos en las respuestas de los “100 argentinos” suponiendo que queríamos estimar todo antes de que se emitiera ningún programa. Como no podíamos saber qué responderían los concursantes, supusimos que la probabilidad de elección de cada respuesta se basaba en su ocurrencia en los “100 argentinos”. Por ejemplo: si 100 argentinos respondieron “manzana”, el participante, siendo un argentino más, tendría 0.3 de probabilidad de responder “manzana”.
+Además de eso, tomamos muestras de los resultados reales de algunos participantes, y el dinero real gastado en un mes, con el propósito de poder testear si nuestra estimación era correcta, pero sin usar los mismos datos que usamos para calcularla, ya que esto podría ser tramposo.
 
+Supusimos distintas distribuciones para cada posible respuesta. La cantidad de puntos de cada posible respuesta tiene una distribución normal, cada una con su respectiva media y desvío estándar. Ejemplo: la respuesta número uno tiene una distribución normal con media de 31.86 y desvío de 4.28. Esto lo supusimos aplicando el Teorema central del Límite, y que nuestra muestras cumplían con las condiciones de ser independientes idénticamente distribuidas, y contábamos con una muestra lo suficientemente grande. Luego de hacer la estimación, vimos que la cantidad de dinero gastada en familias que no llegaban a los 200 puntos no era despreciable, ya que llegamos a la conclusión que una familia tiene menos de un 0.3 de probabilidades de ganar 50.000 pesos, y el resto de las veces ganan aproximadamente entre 5000 y 10.000, por lo que el dinero del segundo caso representaba aproximadamente un 30% del dinero mensual gastado.
+
+Luego de conseguir las distribuciones de los puntos de las respuestas y de aproximar la probabilidad de elección de un concursante por puntos/100, armamos una simulación de 40000 repeticiones de dineros rápidos para ver cuántos puntos lograron los concursantes y cuanta plata les corresponde. El pasaje de puntos a plata es un cambio de variable muy simple con la siguiente función:
+f(x)=50 * x          si    0 < x < 200
+f(x) = 50000          si     x > 200
+
+Para calcular el dinero mensual tomamos 20 programas, por lo tanto 40 dineros rápidos. Nuestro resultado después de correr la simulación muchas veces, ronda los 800000$ pesos.
 ```{r simulacion, echo=TRUE}
 muestras <- c()
 for(i in 1:40000){
@@ -85,7 +98,8 @@ cat("Dinero destinado a perdedores:",  dinero_perdedores)
 cat("Dinero total por mes:", dinero_por_mes)
 ```
 
-# INSERT TEXT (anova)
+Además de chequear que nuestro valor calculado coincida con el de un mes, quisimos ver que los meses coincidan entre ellos y mantengan cierta predictibilidad. Para eso planteamos un test de anova para ver si todos los meses tenían la misma media de dinero gastado. Esto lo hicimos habiendo chequeado previamente que los meses cumplen con las condiciones de ser independientes, de poder aproximarse por distribución normal, y de cumplir con homoestacidad. 
+
 
 ```{r anova, echo=FALSE}
 mes1 <- na.omit(DATA$Total)[1:27]
@@ -95,7 +109,9 @@ grupos<-c(rep("mes1",27),rep("mes2",27),rep("mes3",27))
 summary(aov(c(mes1, mes2, mes3)~grupos))
 ```
 
-# INSERT TEXT (test de hipotesis)
+Hicimos un test de hipótesis para asegurarnos que las proporciones de familias que  pasaron los 200 puntos sean iguales en nuestra simulación y en las muestras de los programas reales. El test nos dio con un p-value grande por lo tanto no rechazamos Ho y aceptamos que la dif de proporciones es 0. 
+Ho: p1 - p2 = 0 Ha: p1 - p2 != 0
+
 
 ```{r test, echo=FALSE}
 ganadores <- muestras[ muestras >= 200 ]
@@ -109,9 +125,8 @@ sd <- sqrt(p*(1-p)* (1/length(datos_reales) + 1/ length(muestras)))
 2*(1-pnorm(proporcion_observada,0,sd))
 ```
 
-# INSERT TEXT OTROS RESULTADOS
-
-## se gana con 150
+Quién diseñó el juego, por qué eligió 200 puntos y no 150 o 250? para responder a esta pregunta, volvimos a correr una simulación pero supusimos que se otorgaría 50000 pesos a las familias que superen los 150 o 250 puntos, respectivamente. Estos fueron los resultados:
+Comparación con 150: 
 
 ```{r comparacion_150, echo=FALSE}
 ganadores <- muestras[ muestras >= 150 ] 
@@ -127,7 +142,7 @@ cat("Dinero destinado a perdedores:",  dinero_perdedores)
 cat("Dinero total por mes:", dinero_por_mes)
 ```
 
-## se gana con 250
+Comparación con 250: 
 
 ```{r comparacion_250, echo=FALSE}
 ganadores <- muestras[ muestras >= 250 ] 
@@ -143,4 +158,4 @@ cat("Dinero destinado a perdedores:",  dinero_perdedores)
 cat("Dinero total por mes:", dinero_por_mes)
 ```
 
-# INSERT TEXT CONCLUCION
+En conclusión, creemos que el juego tiene como objetivo que las familias puedan ganar dinero rápido con frecuencia, para generar más suspenso sabiendo que la probabilidad no es tan baja. Si la modalidad se cambiará a 150 puntos, la probabilidad de ganar sería demasiado alta, y más allá del dinero extra que habría que poner, la impredictibilidad no sería tanta. Por el otro lado, si se cambiara a 250 puntos, las probabilidades de ganar serían demasiado bajas y desalentadoras.
